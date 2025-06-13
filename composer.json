@@ -11,9 +11,15 @@
     ],
     "require": {
         "php": ">=8.1 <8.5.0",
+        "ext-curl": "*",
+        "atoolo/resource-bundle": "dev-main",
+        "atoolo/security-bundle": "^1.0",
+        "overblog/graphql-bundle": "^1.7",
         "symfony/config": "^6.3 || ^7.0",
         "symfony/dependency-injection": "^6.3 || ^7.0",
-        "symfony/framework-bundle": "^6.3 || ^7.1",
+        "symfony/framework-bundle": "^6.3 || ^7.0",
+        "symfony/http-client": "^6.3 || ^7.0",
+        "symfony/http-foundation": "^6.3 || ^7.0",
         "symfony/http-kernel": "^6.3 || ^7.0",
         "symfony/yaml": "^6.3 || ^7.0"
     },
@@ -35,7 +41,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Atoolo\\Seo\\Test\\": "test/"
+            "Atoolo\\WebAccount\\Test\\": "test/"
         }
     },
     "archive": {

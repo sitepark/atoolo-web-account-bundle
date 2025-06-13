@@ -1,0 +1,7 @@
+overblog_graphql:
+  definitions:
+    mappings:
+      types:
+        - type: attribute
+          dir: "%atoolo_webaccount.src_dir%/GraphQL"
+          suffix: ~

@@ -22,6 +22,12 @@ class AtooloWebAccountBundle extends AbstractBundle
      */
     public function build(ContainerBuilder $container): void
     {
+
+        $container->setParameter(
+            'atoolo_webaccount.src_dir',
+            __DIR__,
+        );
+
         $configDir = __DIR__ . '/../config';
 
         $loader = new GlobFileLoader(new FileLocator($configDir));
@@ -33,6 +39,7 @@ class AtooloWebAccountBundle extends AbstractBundle
             ),
         );
 
+        $loader->load('graphql.yaml');
         $loader->load('services.yaml');
     }
     public function getPath(): string
