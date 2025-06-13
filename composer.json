@@ -13,7 +13,7 @@
         "php": ">=8.1 <8.5.0",
         "ext-curl": "*",
         "atoolo/resource-bundle": "dev-main",
-        "atoolo/security-bundle": "^1.0",
+        "atoolo/security-bundle": "dev-main",
         "overblog/graphql-bundle": "^1.7",
         "symfony/config": "^6.3 || ^7.0",
         "symfony/dependency-injection": "^6.3 || ^7.0",
