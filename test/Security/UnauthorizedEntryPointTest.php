@@ -19,7 +19,7 @@ class UnauthorizedEntryPointTest extends TestCase
      */
     public function testStart(): void
     {
-        $entryPoint = new UnauthorizedEntryPoint();
+        $entryPoint = new UnauthorizedEntryPoint("/account");
         $request = $this->createMock(Request::class);
         $response = $entryPoint->start($request);
 

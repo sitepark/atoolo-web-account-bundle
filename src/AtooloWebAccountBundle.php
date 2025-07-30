@@ -28,6 +28,9 @@ class AtooloWebAccountBundle extends AbstractBundle
             ->defaultValue(60 * 60 * 24 * 30)
             ->min(60 * 60)
             ->end()
+            ->stringNode('unauthorized_entry_point')
+            ->defaultValue('/account')
+            ->end()
             ->end();
     }
 
@@ -37,6 +40,8 @@ class AtooloWebAccountBundle extends AbstractBundle
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->parameters()->set('atoolo_webaccount.token_ttl', $config['token_ttl']);
+        $container->parameters()->set('atoolo_webaccount.unauthorized_entry_point',
+            $config['unauthorized_entry_point']);
     }
 
     /**
