@@ -54,6 +54,7 @@ class UsernamePasswordAuthenticationTest extends TestCase
             '',
             '',
             [],
+            new DataBag([]),
             $resourceTenant,
         );
         $this->httpClient = $this->createMock(HttpClientInterface::class);
