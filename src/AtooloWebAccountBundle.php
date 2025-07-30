@@ -40,8 +40,10 @@ class AtooloWebAccountBundle extends AbstractBundle
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->parameters()->set('atoolo_webaccount.token_ttl', $config['token_ttl']);
-        $container->parameters()->set('atoolo_webaccount.unauthorized_entry_point',
-            $config['unauthorized_entry_point']);
+        $container->parameters()->set(
+            'atoolo_webaccount.unauthorized_entry_point',
+            $config['unauthorized_entry_point'],
+        );
     }
 
     /**
