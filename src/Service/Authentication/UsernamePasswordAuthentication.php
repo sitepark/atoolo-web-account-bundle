@@ -70,7 +70,7 @@ GRAPHQL;
         if (200 !== $response->getStatusCode()) {
             throw new RuntimeException(
                 'HTTP Status Code from '
-                . $this->resourceChannel->tenant->host
+                . $this->iesUrlResolver->getBaseUrl()
                 . ': '
                 . $response->getStatusCode(),
             );
@@ -81,7 +81,7 @@ GRAPHQL;
         } catch (Throwable $e) {
             throw new RuntimeException(
                 'Response from '
-                . $this->resourceChannel->tenant->host
+                . $this->iesUrlResolver->getBaseUrl()
                 . ' could not be decoded: '
                 . $e->getMessage(),
             );
