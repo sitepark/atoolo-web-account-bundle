@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Atoolo\WebAccount\Test\Service\Authentication;
 
-use Atoolo\Resource\DataBag;
-use Atoolo\Resource\ResourceChannel;
-use Atoolo\Resource\ResourceTenant;
 use Atoolo\WebAccount\Dto\AuthenticationResult;
 use Atoolo\WebAccount\Dto\AuthenticationStatus;
 use Atoolo\WebAccount\Dto\User;
 use Atoolo\WebAccount\Service\Authentication\UsernamePasswordAuthentication;
+use Atoolo\WebAccount\Service\IesUrlResolver;
 use Exception;
 use JsonException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -25,7 +23,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 #[CoversClass(UsernamePasswordAuthentication::class)]
 class UsernamePasswordAuthenticationTest extends TestCase
 {
-    private readonly ResourceChannel $resourceChannel;
+    private readonly IesUrlResolver $iesUrlResolver;
     private readonly HttpClientInterface $httpClient;
     private readonly DenormalizerInterface $denormalizer;
     private readonly ResponseInterface $httpResponse;
@@ -33,30 +31,7 @@ class UsernamePasswordAuthenticationTest extends TestCase
 
     protected function setUp(): void
     {
-        $resourceTenant = new ResourceTenant(
-            "",
-            "",
-            "",
-            "test.com",
-            new DataBag([]),
-        );
-
-        $this->resourceChannel = new ResourceChannel(
-            '',
-            '',
-            '',
-            '',
-            false,
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            [],
-            new DataBag([]),
-            $resourceTenant,
-        );
+        $this->iesUrlResolver = $this->createMock(IesUrlResolver::class);
         $this->httpClient = $this->createMock(HttpClientInterface::class);
         $this->httpResponse = $this->createMock(ResponseInterface::class);
         $this->httpClient->method('request')->willReturn($this->httpResponse);
@@ -64,7 +39,7 @@ class UsernamePasswordAuthenticationTest extends TestCase
         $this->denormalizer = $this->createMock(DenormalizerInterface::class);
 
         $this->authentication = new UsernamePasswordAuthentication(
-            $this->resourceChannel,
+            $this->iesUrlResolver,
             $this->httpClient,
             $this->denormalizer,
         );
