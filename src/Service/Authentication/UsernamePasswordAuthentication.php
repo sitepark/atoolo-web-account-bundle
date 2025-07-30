@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Atoolo\WebAccount\Service\Authentication;
 
-use Atoolo\Resource\ResourceChannel;
 use Atoolo\WebAccount\Dto\AuthenticationResult;
+use Atoolo\WebAccount\Service\IesUrlResolver;
 use RuntimeException;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -16,8 +15,7 @@ use Throwable;
 class UsernamePasswordAuthentication
 {
     public function __construct(
-        #[Autowire(service: 'atoolo_resource.resource_channel')]
-        private readonly ResourceChannel $resourceChannel,
+        private readonly IesUrlResolver $iesUrlResolver,
         private readonly HttpClientInterface $client,
         private readonly DenormalizerInterface $denormalizer,
     ) {}
@@ -61,20 +59,18 @@ GRAPHQL;
 
         $payload = ['query' => $query, 'variables' => $variables];
 
-
         $response = $this->client->request(
             'POST',
-            'https://' . $this->resourceChannel->tenant->host . '/api/graphql',
+            $this->iesUrlResolver->getBaseUrl() . '/api/graphql',
             [
                 'json' => $payload,
             ],
         );
 
-
         if (200 !== $response->getStatusCode()) {
             throw new RuntimeException(
                 'HTTP Status Code from '
-                . $this->resourceChannel->tenant->host
+                . $this->iesUrlResolver->getBaseUrl()
                 . ': '
                 . $response->getStatusCode(),
             );
@@ -85,7 +81,7 @@ GRAPHQL;
         } catch (Throwable $e) {
             throw new RuntimeException(
                 'Response from '
-                . $this->resourceChannel->tenant->host
+                . $this->iesUrlResolver->getBaseUrl()
                 . ' could not be decoded: '
                 . $e->getMessage(),
             );
