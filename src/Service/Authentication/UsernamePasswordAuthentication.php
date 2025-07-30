@@ -20,8 +20,7 @@ class UsernamePasswordAuthentication
         private readonly ResourceChannel $resourceChannel,
         private readonly HttpClientInterface $client,
         private readonly DenormalizerInterface $denormalizer,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws \JsonException
@@ -67,7 +66,7 @@ GRAPHQL;
             'POST',
             'https://' . $this->resourceChannel->tenant->host . '/api/graphql',
             [
-                'json' => $payload
+                'json' => $payload,
             ],
         );
 
@@ -98,14 +97,9 @@ GRAPHQL;
 
         $data = $responseData['data']['security']['authenticate']['withPassword'] ?? [];
 
-        return $this->denormalizer->denormalize($data, AuthenticationResult::class);
+        /** @var AuthenticationResult $result */
+        $result = $this->denormalizer->denormalize($data, AuthenticationResult::class);
+        return $result;
 
-        /*
-        $account = $data['account'] ?? [];
-        $session = $this->requestStack->getSession();
-        $session->set('webaccount_profile', $data['account'] ?? []);
-
-        return $account['uuid'];
-        */
     }
 }

@@ -19,7 +19,6 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 #[CoversClass(Authentication::class)]
 class AuthenticationTest extends TestCase
 {
-
     private readonly UsernamePasswordAuthentication $usernamePasswordAuthentication;
     private readonly JWTTokenManagerInterface $jwtManager;
     private readonly NormalizerInterface $normalizer;
@@ -40,7 +39,7 @@ class AuthenticationTest extends TestCase
             $this->jwtManager,
             $this->normalizer,
             $this->cookieJar,
-            100
+            100,
         );
     }
 
@@ -55,7 +54,8 @@ class AuthenticationTest extends TestCase
             'Peter',
             'Pan',
             'peterpan@neverland.com',
-            ['A', 'B']);
+            ['A', 'B'],
+        );
 
         $expectedResult = new AuthenticationResult(
             status: AuthenticationStatus::SUCCESS,
@@ -75,7 +75,7 @@ class AuthenticationTest extends TestCase
                 'username' => 'peterpan',
                 'firstName' => 'Peter',
                 'lastName' => 'Pan',
-                'email' => 'peterpan@neverland.com'
+                'email' => 'peterpan@neverland.com',
             ]);
 
         $this->jwtManager->expects($this->once())

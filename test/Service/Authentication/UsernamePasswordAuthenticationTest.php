@@ -106,8 +106,8 @@ class UsernamePasswordAuthenticationTest extends TestCase
             'errors' => [
                 [
                     'message' => 'Authentication failed',
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->expectException(RuntimeException::class);
         $this->authentication->authenticate('testuser', 'testpassword');
@@ -128,11 +128,11 @@ class UsernamePasswordAuthenticationTest extends TestCase
                         'authenticate' => [
                             'withPassword' => [
                                 'status' => 'SUCCESS',
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]);
 
         $expected = new AuthenticationResult(
@@ -144,7 +144,7 @@ class UsernamePasswordAuthenticationTest extends TestCase
                 'Pan',
                 'peterpan@neverland.com',
                 ['A'],
-            )
+            ),
         );
 
         $this->denormalizer->expects(self::once())->method('denormalize')->willReturn($expected);

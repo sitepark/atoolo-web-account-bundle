@@ -26,8 +26,7 @@ class Authentication
         private readonly CookieJar $cookieJar,
         #[Autowire('%atoolo_webaccount.token_ttl%')]
         private readonly int $tokenTtl,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws ExceptionInterface
@@ -38,16 +37,20 @@ class Authentication
     public function authenticationWithPassword(
         string $username,
         string $password,
-        bool $setJwtCookie
+        bool $setJwtCookie,
     ): AuthenticationResult {
         $result = $this->usernamePasswordAuthentication->authenticate($username, $password);
 
         if ($setJwtCookie && $result->status === AuthenticationStatus::SUCCESS && $result->user !== null) {
-            $customPayload = array_merge($this->normalizer->normalize($result->user),
+            /** @var array<string,mixed> $userData */
+            $userData = $this->normalizer->normalize($result->user);
+            $customPayload = array_merge(
+                $userData,
                 [
                     'exp' => time() + $this->tokenTtl,
                     'roles' => array_merge(['WEB_ACCOUNT'], $result->user->getRoles()),
-                ]);
+                ],
+            );
             $jwt = $this->jwtManager->createFromPayload($result->user, $customPayload);
             $cookie = Cookie::create(CookieJar::WEBACCOUNT_TOKEN_NAME)
                 ->withValue($jwt)
@@ -55,7 +58,7 @@ class Authentication
                 ->withHttpOnly(true)
                 ->withSecure(true)
                 ->withPath('/')
-                ->withSameSite('Strict');
+                ->withSameSite('strict');
 
             $this->cookieJar->add($cookie);
         }
@@ -72,7 +75,7 @@ class Authentication
             ->withHttpOnly(true)
             ->withSecure(true)
             ->withPath('/')
-            ->withSameSite('Strict');
+            ->withSameSite('strict');
 
         $this->cookieJar->add($cookie);
         return true;

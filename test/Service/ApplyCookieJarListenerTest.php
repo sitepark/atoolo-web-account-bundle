@@ -18,7 +18,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 #[CoversClass(ApplyCookieJarListener::class)]
 class ApplyCookieJarListenerTest extends TestCase
 {
-
     /**
      * @throws Exception
      */
@@ -38,12 +37,15 @@ class ApplyCookieJarListenerTest extends TestCase
             $this->createMock(HttpKernelInterface::class),
             $this->createMock(Request::class),
             HttpKernelInterface::MAIN_REQUEST,
-            $response
+            $response,
         );
 
         $listener->onKernelResponse($responseEvent);
 
-        $this->assertEquals('test_value', $response->headers->getCookies()[0]->getValue(),
-            'Cookie should be set in the response headers');
+        $this->assertEquals(
+            'test_value',
+            $response->headers->getCookies()[0]->getValue(),
+            'Cookie should be set in the response headers',
+        );
     }
 }

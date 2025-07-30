@@ -21,7 +21,6 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 #[CoversClass(WebAccountAuthenticator::class)]
 class WebAccountAuthenticatorTest extends TestCase
 {
-
     private readonly JWTEncoderInterface $jwtEncoder;
     private readonly DenormalizerInterface $denormalizer;
 
@@ -87,7 +86,7 @@ class WebAccountAuthenticatorTest extends TestCase
             'Peter',
             'Pan',
             'peterpan@neverland.com',
-            ['A']
+            ['A'],
         );
 
         $request = new Request([], [], [], [CookieJar::WEBACCOUNT_TOKEN_NAME => 'abc']);

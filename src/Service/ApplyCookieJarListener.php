@@ -9,10 +9,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class ApplyCookieJarListener
 {
-
-    public function __construct(private readonly CookieJar $cookieJar)
-    {
-    }
+    public function __construct(private readonly CookieJar $cookieJar) {}
 
     #[AsEventListener(event: 'kernel.response')]
     public function onKernelResponse(ResponseEvent $event): void

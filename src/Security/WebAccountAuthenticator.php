@@ -27,8 +27,7 @@ class WebAccountAuthenticator extends AbstractAuthenticator
     public function __construct(
         private readonly JWTEncoderInterface $jwtEncoder,
         private readonly DenormalizerInterface $denormalizer,
-    ) {
-    }
+    ) {}
 
     public function supports(Request $request): ?bool
     {
@@ -55,6 +54,7 @@ class WebAccountAuthenticator extends AbstractAuthenticator
             throw new CustomUserMessageAuthenticationException('Invalid token');
         }
 
+        /** @var User $user */
         $user = $this->denormalizer->denormalize($payload, User::class);
 
         return new SelfValidatingPassport(new UserBadge($user->getUsername(), fn() => $user));

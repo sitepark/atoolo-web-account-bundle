@@ -12,6 +12,5 @@ class AuthenticationResult
     public function __construct(
         public AuthenticationStatus $status,
         public ?User $user = null,
-    ) {
-    }
+    ) {}
 }

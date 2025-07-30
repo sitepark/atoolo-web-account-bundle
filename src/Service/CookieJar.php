@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class CookieJar
 {
-
     public const WEBACCOUNT_TOKEN_NAME = 'WEBACCOUNT_TOKEN';
 
     /** @var Cookie[] */

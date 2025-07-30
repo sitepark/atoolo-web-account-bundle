@@ -14,6 +14,8 @@ class User implements UserInterface, UserProfile
 {
     /**
      * @param array<string> $roles
+     * @param non-empty-string $id
+     * @param non-empty-string $username
      */
     public function __construct(
         private readonly string $id,
@@ -22,8 +24,7 @@ class User implements UserInterface, UserProfile
         private readonly string $lastName,
         private readonly ?string $email,
         private readonly array $roles,
-    ) {
-    }
+    ) {}
 
     public function getId(): string
     {
@@ -40,9 +41,7 @@ class User implements UserInterface, UserProfile
         return $this->roles;
     }
 
-    public function eraseCredentials(): void
-    {
-    }
+    public function eraseCredentials(): void {}
 
     public function getUserIdentifier(): string
     {

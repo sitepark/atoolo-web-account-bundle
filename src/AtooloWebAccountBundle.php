@@ -19,9 +19,9 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
  */
 class AtooloWebAccountBundle extends AbstractBundle
 {
-
     public function configure(DefinitionConfigurator $definition): void
     {
+        /** @phpstan-ignore-next-line */
         $definition->rootNode()
             ->children()
             ->integerNode('token_ttl')
@@ -31,6 +31,9 @@ class AtooloWebAccountBundle extends AbstractBundle
             ->end();
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->parameters()->set('atoolo_webaccount.token_ttl', $config['token_ttl']);
