@@ -27,8 +27,7 @@ class WebAccountAuthenticator extends AbstractAuthenticator
     public function __construct(
         private readonly JWTEncoderInterface $jwtEncoder,
         private readonly DenormalizerInterface $denormalizer,
-    ) {
-    }
+    ) {}
 
     public function supports(Request $request): ?bool
     {
