@@ -5,3 +5,6 @@ overblog_graphql:
         - type: attribute
           dir: "%atoolo_webaccount.src_dir%/GraphQL"
           suffix: ~
+        - types: [ yaml ]
+          dir: "%atoolo_webaccount.config_dir%/graphql/types"
+          suffix: ~
