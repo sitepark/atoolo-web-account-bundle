@@ -27,7 +27,8 @@ class WebAccountAuthenticator extends AbstractAuthenticator
     public function __construct(
         private readonly JWTEncoderInterface $jwtEncoder,
         private readonly DenormalizerInterface $denormalizer,
-    ) {}
+    ) {
+    }
 
     public function supports(Request $request): ?bool
     {
@@ -47,7 +48,7 @@ class WebAccountAuthenticator extends AbstractAuthenticator
         try {
             $payload = $this->jwtEncoder->decode($token);
         } catch (JWTDecodeFailureException $e) {
-            throw new CustomUserMessageAuthenticationException('Token expired');
+            throw new CustomUserMessageAuthenticationException($e->getReason());
         }
 
         if (!$payload || !isset($payload['username'], $payload['id'], $payload['lastName'])) {
