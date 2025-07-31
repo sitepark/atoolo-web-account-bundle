@@ -48,7 +48,13 @@ class Authentication
                 $userData,
                 [
                     'exp' => time() + $this->tokenTtl,
-                    'roles' => array_merge(['WEB_ACCOUNT'], $result->user->getRoles()),
+                    'roles' => array_merge(
+                        ['ROLE_WEB_ACCOUNT'],
+                        array_map(
+                            fn($role) => 'ROLE_' . $role,
+                            $result->user->getRoles(),
+                        ),
+                    ),
                 ],
             );
             $jwt = $this->jwtManager->createFromPayload($result->user, $customPayload);
