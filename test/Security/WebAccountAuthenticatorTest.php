@@ -41,7 +41,7 @@ class WebAccountAuthenticatorTest extends TestCase
      */
     public function testSupports(): void
     {
-        $request = new Request([], [], [], [CookieJar::WEBACCOUNT_TOKEN_NAME => 'abc']);
+        $request = new Request([], [], [], [CookieJar::WEB_ACCOUNT_TOKEN_NAME => 'abc']);
         $this->assertTrue($this->authenticator->supports($request));
     }
 
@@ -53,7 +53,7 @@ class WebAccountAuthenticatorTest extends TestCase
 
     public function testAuthenticateWithExpiredToken(): void
     {
-        $request = new Request([], [], [], [CookieJar::WEBACCOUNT_TOKEN_NAME => 'abc']);
+        $request = new Request([], [], [], [CookieJar::WEB_ACCOUNT_TOKEN_NAME => 'abc']);
         $this->expectException(CustomUserMessageAuthenticationException::class);
         $this->jwtEncoder->method('decode')->willThrowException(new JWTDecodeFailureException('', ''));
         $this->authenticator->authenticate($request);
@@ -61,7 +61,7 @@ class WebAccountAuthenticatorTest extends TestCase
 
     public function testAuthenticateWithRequiredPayload(): void
     {
-        $request = new Request([], [], [], [CookieJar::WEBACCOUNT_TOKEN_NAME => 'abc']);
+        $request = new Request([], [], [], [CookieJar::WEB_ACCOUNT_TOKEN_NAME => 'abc']);
         $this->expectException(CustomUserMessageAuthenticationException::class);
         $this->jwtEncoder->method('decode')->willReturn(['id' => '1']);
         $this->authenticator->authenticate($request);
@@ -89,7 +89,7 @@ class WebAccountAuthenticatorTest extends TestCase
             ['A'],
         );
 
-        $request = new Request([], [], [], [CookieJar::WEBACCOUNT_TOKEN_NAME => 'abc']);
+        $request = new Request([], [], [], [CookieJar::WEB_ACCOUNT_TOKEN_NAME => 'abc']);
         $this->jwtEncoder->method('decode')->willReturn($payload);
         $this->denormalizer->expects($this->once())->method('denormalize')->with($payload)->willReturn($user);
 

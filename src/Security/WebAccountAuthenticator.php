@@ -31,7 +31,7 @@ class WebAccountAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): ?bool
     {
-        return $request->cookies->has(CookieJar::WEBACCOUNT_TOKEN_NAME);
+        return $request->cookies->has(CookieJar::WEB_ACCOUNT_TOKEN_NAME);
     }
 
     /**
@@ -39,7 +39,7 @@ class WebAccountAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(Request $request): Passport
     {
-        $token = $request->cookies->get(CookieJar::WEBACCOUNT_TOKEN_NAME);
+        $token = $request->cookies->get(CookieJar::WEB_ACCOUNT_TOKEN_NAME);
         if (!$token || !is_string($token)) {
             throw new CustomUserMessageAuthenticationException('No token provided');
         }

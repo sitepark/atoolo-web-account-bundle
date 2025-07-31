@@ -58,7 +58,7 @@ class Authentication
                 ],
             );
             $jwt = $this->jwtManager->createFromPayload($result->user, $customPayload);
-            $cookie = Cookie::create(CookieJar::WEBACCOUNT_TOKEN_NAME)
+            $cookie = Cookie::create(CookieJar::WEB_ACCOUNT_TOKEN_NAME)
                 ->withValue($jwt)
                 ->withExpires(time() + $this->tokenTtl)
                 ->withHttpOnly(true)
@@ -75,7 +75,7 @@ class Authentication
     #[GQL\Mutation(name: 'webAccountUnsetJwtCookie', type: 'Boolean!')]
     public function unsetJwtCookie(): bool
     {
-        $cookie = Cookie::create(CookieJar::WEBACCOUNT_TOKEN_NAME)
+        $cookie = Cookie::create(CookieJar::WEB_ACCOUNT_TOKEN_NAME)
             ->withValue('')
             ->withExpires(1)
             ->withHttpOnly(true)
