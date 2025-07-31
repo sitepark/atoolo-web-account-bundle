@@ -59,31 +59,47 @@ GRAPHQL;
 
         $payload = ['query' => $query, 'variables' => $variables];
 
+        $url = $this->iesUrlResolver->getBaseUrl() . '/api/graphql';
+
         $response = $this->client->request(
             'POST',
-            $this->iesUrlResolver->getBaseUrl() . '/api/graphql',
+            $url,
             [
                 'json' => $payload,
             ],
         );
 
         if (200 !== $response->getStatusCode()) {
+            $content = null;
+            try {
+                $content = $response->getContent();
+            } catch (Throwable $e) { // @codeCoverageIgnore
+            }
             throw new RuntimeException(
                 'HTTP Status Code from '
-                . $this->iesUrlResolver->getBaseUrl()
+                . $url
                 . ': '
-                . $response->getStatusCode(),
+                . $response->getStatusCode()
+                . "\nMessage:\n"
+                . $content,
             );
         }
 
         try {
             $responseData = $response->toArray();
         } catch (Throwable $e) {
+            $content = null;
+            try {
+                $content = $response->getContent();
+            } catch (Throwable $e) { // @codeCoverageIgnore
+            }
             throw new RuntimeException(
                 'Response from '
                 . $this->iesUrlResolver->getBaseUrl()
                 . ' could not be decoded: '
-                . $e->getMessage(),
+                . $e->getMessage()
+                . "\nMessage:\n"
+                . $content,
             );
         }
 
