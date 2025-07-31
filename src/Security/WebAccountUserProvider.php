@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 /**
  * @implements UserProviderInterface<User>
  */
-#[AsAlias(id: 'atoolo_webaccount.user_provider')]
+#[AsAlias(id: 'atoolo_web_account.user_provider')]
 class WebAccountUserProvider implements UserProviderInterface
 {
     public function loadUserByIdentifier(string $identifier): UserInterface

@@ -24,7 +24,7 @@ class Authentication
         private readonly JWTTokenManagerInterface $jwtManager,
         private readonly NormalizerInterface $normalizer,
         private readonly CookieJar $cookieJar,
-        #[Autowire('%atoolo_webaccount.token_ttl%')]
+        #[Autowire('%atoolo_web_account.token_ttl%')]
         private readonly int $tokenTtl,
     ) {}
 
@@ -33,7 +33,7 @@ class Authentication
      * @throws TransportExceptionInterface
      * @throws \JsonException
      */
-    #[GQL\Mutation(name: 'webaccountAuthenticationWithPassword', type: 'AuthenticationResult!')]
+    #[GQL\Mutation(name: 'webAccountAuthenticationWithPassword', type: 'AuthenticationResult!')]
     public function authenticationWithPassword(
         string $username,
         string $password,
@@ -72,7 +72,7 @@ class Authentication
         return $result;
     }
 
-    #[GQL\Mutation(name: 'webaccountUnsetJwtCookie', type: 'Boolean!')]
+    #[GQL\Mutation(name: 'webAccountUnsetJwtCookie', type: 'Boolean!')]
     public function unsetJwtCookie(): bool
     {
         $cookie = Cookie::create(CookieJar::WEBACCOUNT_TOKEN_NAME)

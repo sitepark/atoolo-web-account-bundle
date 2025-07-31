@@ -102,7 +102,7 @@ class WebAccountAuthenticatorTest extends TestCase
     {
         $request = $this->createMock(Request::class);
         $token = $this->createMock(TokenInterface::class);
-        $firewallName = 'webaccount';
+        $firewallName = 'webAccount';
 
         $response = $this->authenticator->onAuthenticationSuccess($request, $token, $firewallName);
         $this->assertNull($response);
