@@ -35,7 +35,7 @@ mutation authenticate($username: String!, $password: String!) {
       withPassword(
         username: $username
         password: $password
-        purpose: "atoolo_webaccount"
+        purpose: "atoolo_web_account"
       ) {
         status
         user {

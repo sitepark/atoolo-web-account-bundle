@@ -19,7 +19,7 @@
 		</report>
 	</coverage>
 
-	<testsuite name="atoolo-webaccount-bundle">
+	<testsuite name="atoolo-web-account-bundle">
 		<directory>test/</directory>
 	</testsuite>
 

@@ -39,9 +39,9 @@ class AtooloWebAccountBundle extends AbstractBundle
      */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        $container->parameters()->set('atoolo_webaccount.token_ttl', $config['token_ttl']);
+        $container->parameters()->set('atoolo_web_account.token_ttl', $config['token_ttl']);
         $container->parameters()->set(
-            'atoolo_webaccount.unauthorized_entry_point',
+            'atoolo_web_account.unauthorized_entry_point',
             $config['unauthorized_entry_point'],
         );
     }
@@ -53,14 +53,14 @@ class AtooloWebAccountBundle extends AbstractBundle
     {
 
         $container->setParameter(
-            'atoolo_webaccount.src_dir',
+            'atoolo_web_account.src_dir',
             __DIR__,
         );
 
         $configDir = __DIR__ . '/../config';
 
         $container->setParameter(
-            'atoolo_webaccount.config_dir',
+            'atoolo_web_account.config_dir',
             $configDir,
         );
 

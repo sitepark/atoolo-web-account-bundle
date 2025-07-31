@@ -13,4 +13,4 @@ This bundle integrates seamlessly with the Sitepark CMS and follows Symfony best
 
 Further information:
 
--   [Bundle Documentation](https://sitepark.github.io/atoolo-docs/develop/bundles/webaccount/)
+-   [Bundle Documentation](https://sitepark.github.io/atoolo-docs/develop/bundles/web-account/)

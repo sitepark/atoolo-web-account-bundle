@@ -21,7 +21,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
-#[AsAlias(id: 'atoolo_webaccount.authenticator')]
+#[AsAlias(id: 'atoolo_web_account.authenticator')]
 class WebAccountAuthenticator extends AbstractAuthenticator
 {
     public function __construct(

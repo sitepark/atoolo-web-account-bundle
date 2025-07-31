@@ -1,5 +1,5 @@
 {
-    "name": "atoolo/webaccount-bundle",
+    "name": "atoolo/web-account-bundle",
     "description": "Symfony bundle for Web-Accounts",
     "license": "MIT",
     "type": "symfony-bundle",
