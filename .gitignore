@@ -9,3 +9,4 @@ composer.lock
 /tools
 .phpactor.json
 *.swp
+.claude

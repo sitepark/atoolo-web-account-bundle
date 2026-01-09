@@ -1,4 +1,8 @@
 overblog_graphql:
+  errors_handler:
+    exceptions:
+      errors:
+        - "Atoolo\\WebAccount\\Service\\ServiceException"
   definitions:
     mappings:
       types:
