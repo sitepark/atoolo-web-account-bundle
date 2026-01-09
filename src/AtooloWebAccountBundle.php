@@ -28,6 +28,14 @@ class AtooloWebAccountBundle extends AbstractBundle
             ->defaultValue(60 * 60 * 24 * 30)
             ->min(60 * 60)
             ->end()
+            ->integerNode('registration_token_ttl')
+            ->defaultValue(60 * 60 * 2)
+            ->min(60 * 10)
+            ->end()
+            ->integerNode('password_reset_token_ttl')
+            ->defaultValue(60 * 60 * 2)
+            ->min(60 * 10)
+            ->end()
             ->stringNode('unauthorized_entry_point')
             ->defaultValue('/account')
             ->end()
@@ -40,6 +48,11 @@ class AtooloWebAccountBundle extends AbstractBundle
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->parameters()->set('atoolo_web_account.token_ttl', $config['token_ttl']);
+        $container->parameters()->set('atoolo_web_account.registration_token_ttl', $config['registration_token_ttl']);
+        $container->parameters()->set(
+            'atoolo_web_account.password_reset_token_ttl',
+            $config['password_reset_token_ttl'],
+        );
         $container->parameters()->set(
             'atoolo_web_account.unauthorized_entry_point',
             $config['unauthorized_entry_point'],
@@ -75,10 +88,5 @@ class AtooloWebAccountBundle extends AbstractBundle
 
         $loader->load('graphql.yaml');
         $loader->load('services.yaml');
-    }
-
-    public function getPath(): string
-    {
-        return __DIR__;
     }
 }
