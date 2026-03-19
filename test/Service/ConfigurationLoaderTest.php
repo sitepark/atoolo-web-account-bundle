@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\WebAccount\Test\Service;
 
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\ResourceChannel;
-use Atoolo\Resource\ResourceTenant;
 use Atoolo\WebAccount\Dto\Config\WebAccountConfiguration;
 use Atoolo\WebAccount\Service\ConfigurationLoader;
 use InvalidArgumentException;
@@ -33,30 +31,26 @@ class ConfigurationLoaderTest extends TestCase
         $this->tempDir = sys_get_temp_dir() . '/web-account-test-' . uniqid();
         mkdir($this->tempDir . '/web-account', 0777, true);
 
-        $tenant = new ResourceTenant(
-            id: 'test-tenant',
-            name: 'Test Tenant',
-            anchor: '/test',
-            host: 'test.example.com',
-            attributes: new DataBag([]),
-        );
-
-        $this->resourceChannel = new ResourceChannel(
-            id: 'test-channel',
-            name: 'Test Channel',
-            anchor: '/test',
-            serverName: 'test.example.com',
-            isPreview: false,
-            nature: 'web',
-            locale: 'en_US',
-            baseDir: $this->tempDir,
-            resourceDir: $this->tempDir . '/resources',
-            configDir: $this->tempDir,
-            searchIndex: 'test-index',
-            translationLocales: ['en_US', 'de_DE'],
-            attributes: new DataBag([]),
-            tenant: $tenant,
-        );
+        $this->resourceChannel = ResourceChannel::create([
+            'id' => 'test-channel',
+            'name' => 'Test Channel',
+            'anchor' => '/test',
+            'serverName' => 'test.example.com',
+            'isPreview' => false,
+            'nature' => 'web',
+            'locale' => 'en_US',
+            'baseDir' => $this->tempDir,
+            'resourceDir' => $this->tempDir . '/resources',
+            'configDir' => $this->tempDir,
+            'searchIndex' => 'test-index',
+            'translationLocales' => ['en_US', 'de_DE'],
+            'tenant' => [
+                'id' => 'test-tenant',
+                'name' => 'Test Tenant',
+                'anchor' => '/test',
+                'host' => 'test.example.com',
+            ],
+        ]);
 
         $this->denormalizer = $this->createMock(DenormalizerInterface::class);
 
