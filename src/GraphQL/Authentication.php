@@ -34,6 +34,7 @@ class Authentication
      * @throws \JsonException
      */
     #[GQL\Mutation(name: 'webAccountAuthenticationWithPassword', type: 'AuthenticationResult!')]
+    #[GQL\Access('true')] // Allow this even in extranet scenarios without authorization
     public function authenticationWithPassword(
         string $username,
         string $password,

@@ -26,8 +26,10 @@ class Password
      * @throws TransportExceptionInterface
      */
     #[GQL\Mutation(name: 'webAccountStartPasswordRecovery', type: 'StartPasswordRecoveryResult!')]
-    public function startPasswordRecovery(StartPasswordRecoveryInput $input): StartPasswordRecoveryResult
-    {
+    #[GQL\Access('true')] // Allow this even in extranet scenarios without authorization
+    public function startPasswordRecovery(
+        StartPasswordRecoveryInput $input,
+    ): StartPasswordRecoveryResult {
         return $this->startPasswordRecovery->startPasswordRecovery(
             new StartPasswordRecoveryRequest(
                 configName: $input->configName,
@@ -41,8 +43,10 @@ class Password
      * @throws TransportExceptionInterface
      */
     #[GQL\Mutation(name: 'webAccountFinishPasswordRecovery', type: 'Boolean!')]
-    public function finishPasswordRecovery(FinishPasswordRecoveryInput $input): bool
-    {
+    #[GQL\Access('true')] // Allow this even in extranet scenarios without authorization
+    public function finishPasswordRecovery(
+        FinishPasswordRecoveryInput $input,
+    ): bool {
         $this->finishPasswordRecovery->finishPasswordRecovery(
             new FinishPasswordRecoveryRequest(
                 configName: $input->configName,
