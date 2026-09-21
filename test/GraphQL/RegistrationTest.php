@@ -59,9 +59,9 @@ class RegistrationTest extends TestCase
             ->expects($this->once())
             ->method('startRegistration')
             ->with($this->callback(function ($request) use ($input) {
-                return $request->configName === $input->configName &&
-                    $request->lang === $input->lang &&
-                    $request->emailAddress === $input->emailAddress;
+                return $request->configName === $input->configName
+                    && $request->lang === $input->lang
+                    && $request->emailAddress === $input->emailAddress;
             }))
             ->willReturn(new StartRegistrationResult(
                 challengeId: 'challenge-id-123',
@@ -97,13 +97,13 @@ class RegistrationTest extends TestCase
             ->expects($this->once())
             ->method('finishRegistration')
             ->with($this->callback(function ($request) use ($input) {
-                return $request->configName === $input->configName &&
-                    $request->lang === $input->lang &&
-                    $request->challengeId === $input->challengeId &&
-                    $request->code === $input->code &&
-                    $request->firstName === $input->firstName &&
-                    $request->lastName === $input->lastName &&
-                    $request->password === $input->password;
+                return $request->configName === $input->configName
+                    && $request->lang === $input->lang
+                    && $request->challengeId === $input->challengeId
+                    && $request->code === $input->code
+                    && $request->firstName === $input->firstName
+                    && $request->lastName === $input->lastName
+                    && $request->password === $input->password;
             }))
             ->willReturn(new FinishRegistrationResult(
                 id: 'user-id-456',
@@ -137,13 +137,13 @@ class RegistrationTest extends TestCase
             ->expects($this->once())
             ->method('finishRegistration')
             ->with($this->callback(function ($request) use ($input) {
-                return $request->configName === $input->configName &&
-                    $request->lang === $input->lang &&
-                    $request->challengeId === $input->challengeId &&
-                    $request->code === $input->code &&
-                    $request->firstName === $input->firstName &&
-                    $request->lastName === $input->lastName &&
-                    $request->password === $input->password;
+                return $request->configName === $input->configName
+                    && $request->lang === $input->lang
+                    && $request->challengeId === $input->challengeId
+                    && $request->code === $input->code
+                    && $request->firstName === $input->firstName
+                    && $request->lastName === $input->lastName
+                    && $request->password === $input->password;
             }))
             ->willThrowException(new EmailAlreadyExistsException('john.doe@example.com'));
 

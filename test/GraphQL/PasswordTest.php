@@ -54,9 +54,9 @@ class PasswordTest extends TestCase
             ->expects($this->once())
             ->method('startPasswordRecovery')
             ->with($this->callback(function ($request) use ($input) {
-                return $request->configName === $input->configName &&
-                    $request->lang === $input->lang &&
-                    $request->username === $input->username;
+                return $request->configName === $input->configName
+                    && $request->lang === $input->lang
+                    && $request->username === $input->username;
             }))
             ->willReturn(new StartPasswordRecoveryResult(
                 challengeId: 'challenge-id-123',
@@ -89,11 +89,11 @@ class PasswordTest extends TestCase
             ->expects($this->once())
             ->method('finishPasswordRecovery')
             ->with($this->callback(function ($request) use ($input) {
-                return $request->configName === $input->configName &&
-                    $request->lang === $input->lang &&
-                    $request->challengeId === $input->challengeId &&
-                    $request->code === $input->code &&
-                    $request->newPassword === $input->newPassword;
+                return $request->configName === $input->configName
+                    && $request->lang === $input->lang
+                    && $request->challengeId === $input->challengeId
+                    && $request->code === $input->code
+                    && $request->newPassword === $input->newPassword;
             }));
         $result = $this->password->finishPasswordRecovery($input);
         $this->assertTrue($result, "The finishPasswordRecovery method should return true.");

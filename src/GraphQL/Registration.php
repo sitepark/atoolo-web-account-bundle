@@ -36,8 +36,10 @@ class Registration implements MutationInterface, AliasedInterface
      * @throws ServiceException
      */
     #[GQL\Mutation(name: 'webAccountStartRegistration', type: 'StartRegistrationResult!')]
-    public function startRegistration(StartRegistrationInput $input): StartRegistrationResult
-    {
+    #[GQL\Access('true')] // Allow this even in extranet scenarios without authorization
+    public function startRegistration(
+        StartRegistrationInput $input,
+    ): StartRegistrationResult {
         return $this->startRegistration->startRegistration(new StartRegistrationRequest(
             configName: $input->configName,
             lang: $input->lang,
@@ -50,6 +52,7 @@ class Registration implements MutationInterface, AliasedInterface
      * @throws TransportExceptionInterface
      */
     #[GQL\Mutation(name: 'webAccountFinishRegistration', type: 'FinishUserRegistrationResultType!')]
+    #[GQL\Access('true')] // Allow this even in extranet scenarios without authorization
     public function finishRegistration(
         FinishRegistrationInput $input,
     ): FinishRegistrationResult|EmailAlreadyExistsError {
