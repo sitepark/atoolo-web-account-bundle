@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Atoolo\WebAccount\Test\Service;
 
-use Atoolo\Resource\DataBag;
 use Atoolo\Resource\ResourceChannel;
-use Atoolo\Resource\ResourceTenant;
 use Atoolo\WebAccount\Service\IesUrlResolver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -18,30 +16,11 @@ class IesUrlResolverTest extends TestCase
 
     public function setUp(): void
     {
-        $resourceTenant = new ResourceTenant(
-            "",
-            "",
-            "",
-            "test.com",
-            new DataBag([]),
-        );
-
-        $this->resourceChannel = new ResourceChannel(
-            '',
-            '',
-            '',
-            '',
-            false,
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            [],
-            new DataBag([]),
-            $resourceTenant,
-        );
+        $this->resourceChannel = ResourceChannel::create([
+            'tenant' => [
+                'host' => 'test.com',
+            ],
+        ]);
     }
 
     public function testFallbackToResourceChannelHost(): void
