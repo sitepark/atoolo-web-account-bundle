@@ -88,9 +88,9 @@ class StartRegistrationTest extends TestCase
             ->with(
                 $this->stringContains('mutation startUserRegistration'),
                 $this->callback(function ($variables) {
-                    return $variables['input']['email'] === 'john.doe@example.com' &&
-                        $variables['input']['emailParameters']['lang'] === 'en' &&
-                        $variables['input']['emailParameters']['theme'] === 'default';
+                    return $variables['input']['email'] === 'john.doe@example.com'
+                        && $variables['input']['emailParameters']['lang'] === 'en'
+                        && $variables['input']['emailParameters']['theme'] === 'default';
                 }),
                 'test-api-key',
                 $this->callback(function ($responseMapper) {
@@ -108,10 +108,10 @@ class StartRegistrationTest extends TestCase
 
                     $result = $responseMapper($sampleResponse);
 
-                    return $result instanceof StartRegistrationResult &&
-                        $result->challengeId === 'challenge-id-123' &&
-                        $result->createAt == new DateTime('2026-01-09T08:06:00+00:00') &&
-                        $result->expiresAt == new DateTime('2026-01-09T08:36:00+00:00');
+                    return $result instanceof StartRegistrationResult
+                        && $result->challengeId === 'challenge-id-123'
+                        && $result->createAt == new DateTime('2026-01-09T08:06:00+00:00')
+                        && $result->expiresAt == new DateTime('2026-01-09T08:36:00+00:00');
                 }),
                 $this->callback(function ($errorCallback) {
                     return $errorCallback('', '', []) === null;
@@ -152,9 +152,9 @@ class StartRegistrationTest extends TestCase
             ->with(
                 $this->stringContains('mutation startUserRegistration'),
                 $this->callback(function ($variables) {
-                    return $variables['input']['email'] === 'john.doe@example.com' &&
-                        $variables['input']['emailParameters']['lang'] === 'en' &&
-                        $variables['input']['emailParameters']['theme'] === 'default';
+                    return $variables['input']['email'] === 'john.doe@example.com'
+                        && $variables['input']['emailParameters']['lang'] === 'en'
+                        && $variables['input']['emailParameters']['theme'] === 'default';
                 }),
                 'test-api-key',
                 $this->anything(),

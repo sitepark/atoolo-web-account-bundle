@@ -36,8 +36,8 @@ class ConfigurationLoader
             $data = require $file;
             if (!is_array($data)) {
                 throw new RuntimeException(
-                    'The web-account configuration ' .
-                    $file . ' should return an array',
+                    'The web-account configuration '
+                    . $file . ' should return an array',
                 );
             }
 
@@ -47,8 +47,8 @@ class ConfigurationLoader
 
         } catch (ExceptionInterface $e) {
             throw new InvalidArgumentException(
-                'Failed to deserialize web-account configuration ' .
-                $file . ': ' . $e->getMessage(),
+                'Failed to deserialize web-account configuration '
+                . $file . ': ' . $e->getMessage(),
                 0,
                 $e,
             );
@@ -61,8 +61,8 @@ class ConfigurationLoader
     private function getFile(string $name): string
     {
         $filename = $this->getSanitizedFileName($name);
-        return $this->resourceChannel->configDir .
-            '/web-account/' . $filename . '.php';
+        return $this->resourceChannel->configDir
+            . '/web-account/' . $filename . '.php';
     }
 
     private function getSanitizedFileName(string $name): string

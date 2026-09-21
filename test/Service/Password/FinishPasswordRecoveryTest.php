@@ -79,11 +79,11 @@ class FinishPasswordRecoveryTest extends TestCase
             ->with(
                 $this->stringContains('mutation finishPasswordRecovery'),
                 $this->callback(function ($variables) {
-                    return $variables['input']['challengeId'] === 'challenge-id-123' &&
-                        $variables['input']['code'] === 123456 &&
-                        $variables['input']['newPassword'] === 'NewSecurePassword123!' &&
-                        $variables['input']['emailParameters']['lang'] === 'en' &&
-                        $variables['input']['emailParameters']['theme'] === 'default';
+                    return $variables['input']['challengeId'] === 'challenge-id-123'
+                        && $variables['input']['code'] === 123456
+                        && $variables['input']['newPassword'] === 'NewSecurePassword123!'
+                        && $variables['input']['emailParameters']['lang'] === 'en'
+                        && $variables['input']['emailParameters']['theme'] === 'default';
                 }),
                 'test-api-key',
                 $this->callback(function ($successChecker) {
@@ -135,9 +135,9 @@ class FinishPasswordRecoveryTest extends TestCase
             ->with(
                 $this->stringContains('mutation finishPasswordRecovery'),
                 $this->callback(function ($variables) {
-                    return $variables['input']['challengeId'] === 'challenge-id-123' &&
-                        $variables['input']['code'] === 123456 &&
-                        $variables['input']['newPassword'] === 'NewSecurePassword123!';
+                    return $variables['input']['challengeId'] === 'challenge-id-123'
+                        && $variables['input']['code'] === 123456
+                        && $variables['input']['newPassword'] === 'NewSecurePassword123!';
                 }),
                 'test-api-key',
                 $this->anything(),

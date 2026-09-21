@@ -90,14 +90,14 @@ class FinishRegistrationTest extends TestCase
             ->with(
                 $this->stringContains('mutation finishUserRegistration'),
                 $this->callback(function ($variables) {
-                    return $variables['input']['challengeId'] === 'challenge-id-123' &&
-                        $variables['input']['code'] === 123456 &&
-                        $variables['input']['firstName'] === 'John' &&
-                        $variables['input']['lastName'] === 'Doe' &&
-                        $variables['input']['password'] === 'SecurePassword123!' &&
-                        $variables['input']['roleIdentifiers'] === ['ROLE_USER', 'ROLE_CUSTOMER'] &&
-                        $variables['input']['emailParameters']['lang'] === 'en' &&
-                        $variables['input']['emailParameters']['theme'] === 'default';
+                    return $variables['input']['challengeId'] === 'challenge-id-123'
+                        && $variables['input']['code'] === 123456
+                        && $variables['input']['firstName'] === 'John'
+                        && $variables['input']['lastName'] === 'Doe'
+                        && $variables['input']['password'] === 'SecurePassword123!'
+                        && $variables['input']['roleIdentifiers'] === ['ROLE_USER', 'ROLE_CUSTOMER']
+                        && $variables['input']['emailParameters']['lang'] === 'en'
+                        && $variables['input']['emailParameters']['theme'] === 'default';
                 }),
                 'test-api-key',
                 $this->callback(function ($responseMapper) {
@@ -115,9 +115,9 @@ class FinishRegistrationTest extends TestCase
 
                     $result = $responseMapper($sampleResponse);
 
-                    $isValid = $result instanceof FinishRegistrationResult &&
-                        $result->id === 'user-id-456' &&
-                        $result->email === 'john.doe@example.com';
+                    $isValid = $result instanceof FinishRegistrationResult
+                        && $result->id === 'user-id-456'
+                        && $result->email === 'john.doe@example.com';
 
                     // Test unexpected typename case
                     $unexpectedResponse = [

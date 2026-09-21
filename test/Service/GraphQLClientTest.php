@@ -58,11 +58,11 @@ class GraphQLClientTest extends TestCase
                 'POST',
                 'https://ies.example.com/api/graphql',
                 $this->callback(function ($options) use ($query, $variables, $userToken) {
-                    return isset($options['json']) &&
-                        $options['json']['query'] === $query &&
-                        $options['json']['variables'] === $variables &&
-                        isset($options['headers']['IES-USER-TOKEN']) &&
-                        $options['headers']['IES-USER-TOKEN'] === $userToken;
+                    return isset($options['json'])
+                        && $options['json']['query'] === $query
+                        && $options['json']['variables'] === $variables
+                        && isset($options['headers']['IES-USER-TOKEN'])
+                        && $options['headers']['IES-USER-TOKEN'] === $userToken;
                 }),
             )
             ->willReturn($this->httpResponse);
