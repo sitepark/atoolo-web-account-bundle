@@ -14,6 +14,11 @@ class WebAccountConfiguration
         public readonly string $apiKey,
         public readonly RegistrationConfiguration $registration,
         public readonly EmailConfiguration $email,
+        /**
+         * The configuration as signed by the IES when it published it. The IES takes sender,
+         * reply-to, theme and roles only from this token, so it is passed on unchanged.
+         */
+        public readonly string $signedConfig,
         public readonly ?RateLimitsConfiguration $rateLimit = null,
     ) {}
 }

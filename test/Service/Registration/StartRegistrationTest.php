@@ -46,6 +46,7 @@ class StartRegistrationTest extends TestCase
                 from: new Address('noreply@example.com', 'Example'),
                 replyTo: new Address('support@example.com', 'Support'),
             ),
+            signedConfig: 'signed-config',
         );
     }
 
@@ -96,8 +97,9 @@ class StartRegistrationTest extends TestCase
                 $this->stringContains('mutation startUserRegistration'),
                 $this->callback(function ($variables) {
                     return $variables['input']['email'] === 'john.doe@example.com'
-                        && $variables['input']['emailParameters']['lang'] === 'en'
-                        && $variables['input']['emailParameters']['theme'] === 'default';
+                        && $variables['input']['lang'] === 'en'
+                        && $variables['input']['signedConfig'] === 'signed-config'
+                        && !isset($variables['input']['emailParameters']);
                 }),
                 'test-api-key',
                 $this->callback(function ($responseMapper) {
@@ -160,8 +162,9 @@ class StartRegistrationTest extends TestCase
                 $this->stringContains('mutation startUserRegistration'),
                 $this->callback(function ($variables) {
                     return $variables['input']['email'] === 'john.doe@example.com'
-                        && $variables['input']['emailParameters']['lang'] === 'en'
-                        && $variables['input']['emailParameters']['theme'] === 'default';
+                        && $variables['input']['lang'] === 'en'
+                        && $variables['input']['signedConfig'] === 'signed-config'
+                        && !isset($variables['input']['emailParameters']);
                 }),
                 'test-api-key',
                 $this->anything(),

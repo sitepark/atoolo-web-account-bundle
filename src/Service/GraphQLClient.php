@@ -97,6 +97,18 @@ class GraphQLClient
                 if ($exception !== null) {
                     throw $exception;
                 }
+                if ($errorSimpleClassName === 'ExpiredSignedDataException') {
+                    throw new ServiceException(
+                        'The signed web-account configuration has expired;'
+                        . ' the IES has not regenerated the configuration file in time',
+                    );
+                }
+                if ($errorSimpleClassName === 'InvalidSignedDataException') {
+                    throw new ServiceException(
+                        'The IES rejected the signed web-account configuration;'
+                        . ' republish the configuration article',
+                    );
+                }
             }
             throw new RuntimeException($responseData['errors'][0]['message'] ?? 'Internal Error');
         }
