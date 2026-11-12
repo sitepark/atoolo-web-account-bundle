@@ -8,6 +8,8 @@ use Atoolo\WebAccount\Dto\StartRegistrationRequest;
 use Atoolo\WebAccount\Dto\StartRegistrationResult;
 use Atoolo\WebAccount\Service\ConfigurationLoader;
 use Atoolo\WebAccount\Service\GraphQLClient;
+use Atoolo\WebAccount\Service\RateLimit\RateLimitedOperation;
+use Atoolo\WebAccount\Service\RateLimit\RequestRateLimiter;
 use Atoolo\WebAccount\Service\ServiceException;
 use DateTime;
 use Exception;
@@ -18,6 +20,7 @@ class StartRegistration
     public function __construct(
         private readonly GraphQLClient $graphQLClient,
         private readonly ConfigurationLoader $configurationLoader,
+        private readonly RequestRateLimiter $rateLimiter,
     ) {}
 
     /**
@@ -29,6 +32,7 @@ class StartRegistration
     {
 
         $config = $this->configurationLoader->load($request->configName);
+        $this->rateLimiter->consume(RateLimitedOperation::START_REGISTRATION, $config);
 
         $query = <<<'GRAPHQL'
 mutation startUserRegistration($input: StartUserRegistrationInput!) {

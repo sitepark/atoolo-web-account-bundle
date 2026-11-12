@@ -7,11 +7,15 @@ namespace Atoolo\WebAccount\Test\Service\Authentication;
 use Atoolo\WebAccount\Dto\AuthenticationResult;
 use Atoolo\WebAccount\Dto\AuthenticationStatus;
 use Atoolo\WebAccount\Dto\User;
+use Atoolo\WebAccount\Exception\RateLimitExceededException;
 use Atoolo\WebAccount\Service\Authentication\UsernamePasswordAuthentication;
 use Atoolo\WebAccount\Service\IesUrlResolver;
+use Atoolo\WebAccount\Service\RateLimit\RateLimitedOperation;
+use Atoolo\WebAccount\Service\RateLimit\RequestRateLimiter;
 use Exception;
 use JsonException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
@@ -27,6 +31,7 @@ class UsernamePasswordAuthenticationTest extends TestCase
     private readonly HttpClientInterface $httpClient;
     private readonly DenormalizerInterface $denormalizer;
     private readonly ResponseInterface $httpResponse;
+    private readonly RequestRateLimiter&MockObject $rateLimiter;
     private readonly UsernamePasswordAuthentication $authentication;
 
     protected function setUp(): void
@@ -37,11 +42,13 @@ class UsernamePasswordAuthenticationTest extends TestCase
         $this->httpClient->method('request')->willReturn($this->httpResponse);
 
         $this->denormalizer = $this->createMock(DenormalizerInterface::class);
+        $this->rateLimiter = $this->createMock(RequestRateLimiter::class);
 
         $this->authentication = new UsernamePasswordAuthentication(
             $this->iesUrlResolver,
             $this->httpClient,
             $this->denormalizer,
+            $this->rateLimiter,
         );
     }
 
@@ -129,4 +136,16 @@ class UsernamePasswordAuthenticationTest extends TestCase
         $this->assertSame($expected, $result, 'Authentication result does not match expected value');
     }
 
+    public function testAuthenticateRateLimitExceeded(): void
+    {
+        $this->rateLimiter
+            ->expects($this->once())
+            ->method('consume')
+            ->with(RateLimitedOperation::AUTHENTICATION)
+            ->willThrowException(new RateLimitExceededException());
+
+        $this->expectException(RateLimitExceededException::class);
+
+        $this->authentication->authenticate('johndoe', 'secret');
+    }
 }

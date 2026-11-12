@@ -9,8 +9,11 @@ use Atoolo\WebAccount\Dto\Config\RegistrationConfiguration;
 use Atoolo\WebAccount\Dto\Config\WebAccountConfiguration;
 use Atoolo\WebAccount\Dto\StartRegistrationRequest;
 use Atoolo\WebAccount\Dto\StartRegistrationResult;
+use Atoolo\WebAccount\Exception\RateLimitExceededException;
 use Atoolo\WebAccount\Service\ConfigurationLoader;
 use Atoolo\WebAccount\Service\GraphQLClient;
+use Atoolo\WebAccount\Service\RateLimit\RateLimitedOperation;
+use Atoolo\WebAccount\Service\RateLimit\RequestRateLimiter;
 use Atoolo\WebAccount\Service\Registration\StartRegistration;
 use Atoolo\WebAccount\Service\ServiceException;
 use DateTime;
@@ -27,6 +30,8 @@ class StartRegistrationTest extends TestCase
     private readonly GraphQLClient&MockObject $graphQLClient;
 
     private readonly ConfigurationLoader&MockObject $configurationLoader;
+
+    private readonly RequestRateLimiter&MockObject $rateLimiter;
 
     private readonly StartRegistration $startRegistration;
 
@@ -48,10 +53,12 @@ class StartRegistrationTest extends TestCase
     {
         $this->graphQLClient = $this->createMock(GraphQLClient::class);
         $this->configurationLoader = $this->createMock(ConfigurationLoader::class);
+        $this->rateLimiter = $this->createMock(RequestRateLimiter::class);
 
         $this->startRegistration = new StartRegistration(
             $this->graphQLClient,
             $this->configurationLoader,
+            $this->rateLimiter,
         );
     }
 
@@ -172,5 +179,31 @@ class StartRegistrationTest extends TestCase
         $this->expectExceptionMessage('Start user registration failed');
 
         $this->startRegistration->startRegistration($request);
+    }
+
+    public function testStartRegistrationRateLimitExceeded(): void
+    {
+        $config = self::createTestConfig();
+        $this->configurationLoader
+            ->method('load')
+            ->willReturn($config);
+
+        $this->rateLimiter
+            ->expects($this->once())
+            ->method('consume')
+            ->with(RateLimitedOperation::START_REGISTRATION, $config)
+            ->willThrowException(new RateLimitExceededException());
+
+        $this->graphQLClient
+            ->expects($this->never())
+            ->method('request');
+
+        $this->expectException(RateLimitExceededException::class);
+
+        $this->startRegistration->startRegistration(new StartRegistrationRequest(
+            configName: 'test',
+            lang: 'en',
+            emailAddress: 'john.doe@example.com',
+        ));
     }
 }

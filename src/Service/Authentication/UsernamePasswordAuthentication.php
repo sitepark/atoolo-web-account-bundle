@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Atoolo\WebAccount\Service\Authentication;
 
 use Atoolo\WebAccount\Dto\AuthenticationResult;
+use Atoolo\WebAccount\Exception\RateLimitExceededException;
 use Atoolo\WebAccount\Service\IesUrlResolver;
+use Atoolo\WebAccount\Service\RateLimit\RateLimitedOperation;
+use Atoolo\WebAccount\Service\RateLimit\RequestRateLimiter;
 use RuntimeException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -18,15 +21,18 @@ class UsernamePasswordAuthentication
         private readonly IesUrlResolver $iesUrlResolver,
         private readonly HttpClientInterface $client,
         private readonly DenormalizerInterface $denormalizer,
+        private readonly RequestRateLimiter $rateLimiter,
     ) {}
 
     /**
      * @throws \JsonException
      * @throws TransportExceptionInterface
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
+     * @throws RateLimitExceededException
      */
     public function authenticate(string $username, string $password): AuthenticationResult
     {
+        $this->rateLimiter->consume(RateLimitedOperation::AUTHENTICATION);
 
         $query = <<<'GRAPHQL'
 mutation authenticate($username: String!, $password: String!) {

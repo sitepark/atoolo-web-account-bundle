@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Atoolo\WebAccount;
 
 use Exception;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\GlobFileLoader;
@@ -38,7 +39,42 @@ class AtooloWebAccountBundle extends AbstractBundle
             ->stringNode('unauthorized_entry_point')
             ->defaultValue('/account')
             ->end()
+            ->arrayNode('rate_limit')
+            ->info('Limits the public endpoints per client IP (sliding window)')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->booleanNode('enabled')
+            ->defaultTrue()
+            ->end()
+            ->scalarNode('cache_pool')
+            ->info('Cache pool service that stores the rate limiter state')
+            ->defaultValue('cache.app')
+            ->cannotBeEmpty()
+            ->end()
+            ->append($this->createRateLimitNode('start', 5))
+            ->append($this->createRateLimitNode('finish', 10))
+            ->append($this->createRateLimitNode('authentication', 10))
+            ->end()
+            ->end()
             ->end();
+    }
+
+    private function createRateLimitNode(string $name, int $defaultLimit): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition($name);
+        $node
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->integerNode('limit')
+            ->defaultValue($defaultLimit)
+            ->min(1)
+            ->end()
+            ->scalarNode('interval')
+            ->defaultValue('15 minutes')
+            ->cannotBeEmpty()
+            ->end()
+            ->end();
+        return $node;
     }
 
     /**
@@ -56,6 +92,12 @@ class AtooloWebAccountBundle extends AbstractBundle
             'atoolo_web_account.unauthorized_entry_point',
             $config['unauthorized_entry_point'],
         );
+
+        /** @var array{cache_pool: string, enabled: bool} $rateLimit */
+        $rateLimit = $config['rate_limit'];
+        $container->services()->alias('atoolo_web_account.rate_limit.cache', $rateLimit['cache_pool']);
+        unset($rateLimit['cache_pool']);
+        $container->parameters()->set('atoolo_web_account.rate_limit', $rateLimit);
     }
 
     /**

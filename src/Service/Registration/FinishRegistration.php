@@ -9,6 +9,8 @@ use Atoolo\WebAccount\Dto\FinishRegistrationResult;
 use Atoolo\WebAccount\Exception\EmailAlreadyExistsException;
 use Atoolo\WebAccount\Service\ConfigurationLoader;
 use Atoolo\WebAccount\Service\GraphQLClient;
+use Atoolo\WebAccount\Service\RateLimit\RateLimitedOperation;
+use Atoolo\WebAccount\Service\RateLimit\RequestRateLimiter;
 use Atoolo\WebAccount\Service\ServiceException;
 use RuntimeException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -18,6 +20,7 @@ class FinishRegistration
     public function __construct(
         private readonly GraphQLClient $graphQLClient,
         private readonly ConfigurationLoader $configurationLoader,
+        private readonly RequestRateLimiter $rateLimiter,
     ) {}
 
     /**
@@ -28,6 +31,7 @@ class FinishRegistration
     public function finishRegistration(FinishRegistrationRequest $request): FinishRegistrationResult
     {
         $config = $this->configurationLoader->load($request->configName);
+        $this->rateLimiter->consume(RateLimitedOperation::FINISH_REGISTRATION, $config);
 
         $query = <<<'GRAPHQL'
 mutation finishUserRegistration($input: FinishUserRegistrationInput!) {

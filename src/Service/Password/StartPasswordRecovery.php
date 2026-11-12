@@ -8,6 +8,8 @@ use Atoolo\WebAccount\Dto\StartPasswordRecoveryRequest;
 use Atoolo\WebAccount\Dto\StartPasswordRecoveryResult;
 use Atoolo\WebAccount\Service\ConfigurationLoader;
 use Atoolo\WebAccount\Service\GraphQLClient;
+use Atoolo\WebAccount\Service\RateLimit\RateLimitedOperation;
+use Atoolo\WebAccount\Service\RateLimit\RequestRateLimiter;
 use Atoolo\WebAccount\Service\ServiceException;
 use DateTime;
 use Exception;
@@ -18,6 +20,7 @@ class StartPasswordRecovery
     public function __construct(
         private readonly GraphQLClient $graphQLClient,
         private readonly ConfigurationLoader $configurationLoader,
+        private readonly RequestRateLimiter $rateLimiter,
     ) {}
 
     /**
@@ -28,6 +31,7 @@ class StartPasswordRecovery
     {
 
         $config = $this->configurationLoader->load($request->configName);
+        $this->rateLimiter->consume(RateLimitedOperation::START_PASSWORD_RECOVERY, $config);
 
         $query = <<<'GRAPHQL'
 mutation startPasswordRecovery($input: StartPasswordRecoveryInput!) {

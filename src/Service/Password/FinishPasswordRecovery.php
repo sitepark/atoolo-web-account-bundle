@@ -7,6 +7,8 @@ namespace Atoolo\WebAccount\Service\Password;
 use Atoolo\WebAccount\Dto\FinishPasswordRecoveryRequest;
 use Atoolo\WebAccount\Service\ConfigurationLoader;
 use Atoolo\WebAccount\Service\GraphQLClient;
+use Atoolo\WebAccount\Service\RateLimit\RateLimitedOperation;
+use Atoolo\WebAccount\Service\RateLimit\RequestRateLimiter;
 use Atoolo\WebAccount\Service\ServiceException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
@@ -15,6 +17,7 @@ class FinishPasswordRecovery
     public function __construct(
         private readonly GraphQLClient $graphQLClient,
         private readonly ConfigurationLoader $configurationLoader,
+        private readonly RequestRateLimiter $rateLimiter,
     ) {}
 
     /**
@@ -24,6 +27,7 @@ class FinishPasswordRecovery
     {
 
         $config = $this->configurationLoader->load($request->configName);
+        $this->rateLimiter->consume(RateLimitedOperation::FINISH_PASSWORD_RECOVERY, $config);
 
         $query = <<<'GRAPHQL'
 mutation finishPasswordRecovery($input: FinishPasswordRecoveryInput!) {
