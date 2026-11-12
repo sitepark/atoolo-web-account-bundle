@@ -144,7 +144,23 @@ atoolo_web_account:
   registration_token_ttl: 7200       # Registration token TTL (2 hours)
   password_reset_token_ttl: 7200     # Password reset token TTL (2 hours)
   unauthorized_entry_point: '/account'  # Redirect URL for unauthorized users
+  rate_limit:                        # Per client IP, sliding window
+    enabled: true
+    cache_pool: 'cache.app'          # Cache pool storing the limiter state
+    start:          { limit: 5,  interval: '15 minutes' }  # start registration / password recovery
+    finish:         { limit: 10, interval: '15 minutes' }  # finish registration / password recovery
+    authentication: { limit: 10, interval: '15 minutes' }  # login
 ```
+
+### Rate Limiting
+- `Service/RateLimit/RequestRateLimiter` is consumed by the registration, password recovery and
+  authentication services before calling the IES; on exceed it throws `RateLimitExceededException`
+  (generic message, delivered as GraphQL error)
+- Counters are separate per resource channel, web-account config, operation and client IP
+- A web-account config can override `start` / `finish` via a `rateLimit` key, e.g.
+  `'rateLimit' => ['start' => ['limit' => 3, 'interval' => '1 hour']]`
+- Client IP comes from `Request::getClientIp()`; behind a reverse proxy `framework.trusted_proxies`
+  must be configured, otherwise all clients share the proxy's IP
 
 ## Development Notes
 

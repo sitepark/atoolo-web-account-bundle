@@ -14,5 +14,6 @@ class WebAccountConfiguration
         public readonly string $apiKey,
         public readonly RegistrationConfiguration $registration,
         public readonly EmailConfiguration $email,
+        public readonly ?RateLimitsConfiguration $rateLimit = null,
     ) {}
 }

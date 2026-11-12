@@ -10,8 +10,11 @@ use Atoolo\WebAccount\Dto\Config\WebAccountConfiguration;
 use Atoolo\WebAccount\Dto\FinishRegistrationRequest;
 use Atoolo\WebAccount\Dto\FinishRegistrationResult;
 use Atoolo\WebAccount\Exception\EmailAlreadyExistsException;
+use Atoolo\WebAccount\Exception\RateLimitExceededException;
 use Atoolo\WebAccount\Service\ConfigurationLoader;
 use Atoolo\WebAccount\Service\GraphQLClient;
+use Atoolo\WebAccount\Service\RateLimit\RateLimitedOperation;
+use Atoolo\WebAccount\Service\RateLimit\RequestRateLimiter;
 use Atoolo\WebAccount\Service\Registration\FinishRegistration;
 use Atoolo\WebAccount\Service\ServiceException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -26,6 +29,8 @@ class FinishRegistrationTest extends TestCase
     private readonly GraphQLClient&MockObject $graphQLClient;
 
     private readonly ConfigurationLoader&MockObject $configurationLoader;
+
+    private readonly RequestRateLimiter&MockObject $rateLimiter;
 
     private readonly FinishRegistration $finishRegistration;
 
@@ -47,10 +52,12 @@ class FinishRegistrationTest extends TestCase
     {
         $this->graphQLClient = $this->createMock(GraphQLClient::class);
         $this->configurationLoader = $this->createMock(ConfigurationLoader::class);
+        $this->rateLimiter = $this->createMock(RequestRateLimiter::class);
 
         $this->finishRegistration = new FinishRegistration(
             $this->graphQLClient,
             $this->configurationLoader,
+            $this->rateLimiter,
         );
     }
 
@@ -251,5 +258,35 @@ class FinishRegistrationTest extends TestCase
         $this->expectExceptionMessage('Finish user registration failed');
 
         $this->finishRegistration->finishRegistration($request);
+    }
+
+    public function testFinishRegistrationRateLimitExceeded(): void
+    {
+        $config = self::createTestConfig();
+        $this->configurationLoader
+            ->method('load')
+            ->willReturn($config);
+
+        $this->rateLimiter
+            ->expects($this->once())
+            ->method('consume')
+            ->with(RateLimitedOperation::FINISH_REGISTRATION, $config)
+            ->willThrowException(new RateLimitExceededException());
+
+        $this->graphQLClient
+            ->expects($this->never())
+            ->method('request');
+
+        $this->expectException(RateLimitExceededException::class);
+
+        $this->finishRegistration->finishRegistration(new FinishRegistrationRequest(
+            configName: 'test',
+            lang: 'en',
+            challengeId: 'challenge-id-123',
+            code: 123456,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'SecurePassword123!',
+        ));
     }
 }

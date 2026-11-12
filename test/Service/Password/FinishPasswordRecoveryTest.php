@@ -8,9 +8,12 @@ use Atoolo\WebAccount\Dto\Config\EmailConfiguration;
 use Atoolo\WebAccount\Dto\Config\RegistrationConfiguration;
 use Atoolo\WebAccount\Dto\Config\WebAccountConfiguration;
 use Atoolo\WebAccount\Dto\FinishPasswordRecoveryRequest;
+use Atoolo\WebAccount\Exception\RateLimitExceededException;
 use Atoolo\WebAccount\Service\ConfigurationLoader;
 use Atoolo\WebAccount\Service\GraphQLClient;
 use Atoolo\WebAccount\Service\Password\FinishPasswordRecovery;
+use Atoolo\WebAccount\Service\RateLimit\RateLimitedOperation;
+use Atoolo\WebAccount\Service\RateLimit\RequestRateLimiter;
 use Atoolo\WebAccount\Service\ServiceException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -24,6 +27,8 @@ class FinishPasswordRecoveryTest extends TestCase
     private readonly GraphQLClient&MockObject $graphQLClient;
 
     private readonly ConfigurationLoader&MockObject $configurationLoader;
+
+    private readonly RequestRateLimiter&MockObject $rateLimiter;
 
     private readonly FinishPasswordRecovery $finishPasswordRecovery;
 
@@ -45,10 +50,12 @@ class FinishPasswordRecoveryTest extends TestCase
     {
         $this->graphQLClient = $this->createMock(GraphQLClient::class);
         $this->configurationLoader = $this->createMock(ConfigurationLoader::class);
+        $this->rateLimiter = $this->createMock(RequestRateLimiter::class);
 
         $this->finishPasswordRecovery = new FinishPasswordRecovery(
             $this->graphQLClient,
             $this->configurationLoader,
+            $this->rateLimiter,
         );
     }
 
@@ -160,5 +167,33 @@ class FinishPasswordRecoveryTest extends TestCase
         $this->expectExceptionMessage('Finish password recovery failed');
 
         $this->finishPasswordRecovery->finishPasswordRecovery($request);
+    }
+
+    public function testFinishPasswordRecoveryRateLimitExceeded(): void
+    {
+        $config = self::createTestConfig();
+        $this->configurationLoader
+            ->method('load')
+            ->willReturn($config);
+
+        $this->rateLimiter
+            ->expects($this->once())
+            ->method('consume')
+            ->with(RateLimitedOperation::FINISH_PASSWORD_RECOVERY, $config)
+            ->willThrowException(new RateLimitExceededException());
+
+        $this->graphQLClient
+            ->expects($this->never())
+            ->method('request');
+
+        $this->expectException(RateLimitExceededException::class);
+
+        $this->finishPasswordRecovery->finishPasswordRecovery(new FinishPasswordRecoveryRequest(
+            configName: 'test',
+            lang: 'en',
+            challengeId: 'challenge-id-123',
+            code: 123456,
+            newPassword: 'NewSecurePassword123!',
+        ));
     }
 }
