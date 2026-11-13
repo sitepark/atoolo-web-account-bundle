@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Atoolo\WebAccount\Test\Service;
 
 use Atoolo\WebAccount\Service\GraphQLClient;
+use Atoolo\WebAccount\Service\ServiceException;
 use Atoolo\WebAccount\Service\IesUrlResolver;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -230,6 +231,59 @@ class GraphQLClientTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Unmapped error');
+
+        $this->graphQLClient->request(
+            'query { test }',
+            [],
+            null,
+            $responseMapper,
+            $errorMapper,
+        );
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function signedDataErrors(): array
+    {
+        return [
+            'expired' => [
+                'com.sitepark.ies.sharedkernel.security.ExpiredSignedDataException',
+                'has expired',
+            ],
+            'invalid' => [
+                'com.sitepark.ies.sharedkernel.security.InvalidSignedDataException',
+                'rejected the signed web-account configuration',
+            ],
+        ];
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('signedDataErrors')]
+    public function testRequestMapsSignedDataErrors(string $className, string $message): void
+    {
+        $this->httpClient->method('request')->willReturn($this->httpResponse);
+        $this->httpResponse->method('getStatusCode')->willReturn(200);
+        $this->httpResponse->method('toArray')->willReturn([
+            'errors' => [
+                [
+                    'message' => 'invalid signed data',
+                    'extensions' => [
+                        'exception' => [
+                            'className' => $className,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $responseMapper = static fn(array $data) => $data;
+        $errorMapper = static fn(string $class, string $msg, array $data): ?\Exception => null;
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage($message);
 
         $this->graphQLClient->request(
             'query { test }',

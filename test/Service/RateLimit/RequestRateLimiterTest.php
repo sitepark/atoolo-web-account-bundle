@@ -193,6 +193,7 @@ class RequestRateLimiterTest extends TestCase
                 from: new Address('noreply@example.com', 'Example'),
                 replyTo: new Address('support@example.com', 'Support'),
             ),
+            signedConfig: 'signed-config',
             rateLimit: $rateLimit,
         );
     }

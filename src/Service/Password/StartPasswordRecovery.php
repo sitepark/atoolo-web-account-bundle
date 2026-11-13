@@ -50,20 +50,8 @@ GRAPHQL;
         $variables = [
             'input' => [
                 'username' => $request->username,
-                'emailParameters' => [
-                    'from' => [
-                        'address' => $config->email->from->getAddress(),
-                        'name' => $config->email->from->getName(),
-                    ],
-                    'replyTo' => [
-                        [
-                            'address' => $config->email->replyTo->getAddress(),
-                            'name' => $config->email->replyTo->getName(),
-                        ],
-                    ],
-                    'lang' => $request->lang,
-                    'theme' => $config->email->theme,
-                ],
+                'signedConfig' => $config->signedConfig,
+                'lang' => $request->lang,
             ],
         ];
 

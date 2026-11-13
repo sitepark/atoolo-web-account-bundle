@@ -45,6 +45,7 @@ class FinishRegistrationTest extends TestCase
                 from: new Address('noreply@example.com', 'Example'),
                 replyTo: new Address('support@example.com', 'Support'),
             ),
+            signedConfig: 'signed-config',
         );
     }
 
@@ -102,9 +103,10 @@ class FinishRegistrationTest extends TestCase
                         && $variables['input']['firstName'] === 'John'
                         && $variables['input']['lastName'] === 'Doe'
                         && $variables['input']['password'] === 'SecurePassword123!'
-                        && $variables['input']['roleIdentifiers'] === ['ROLE_USER', 'ROLE_CUSTOMER']
-                        && $variables['input']['emailParameters']['lang'] === 'en'
-                        && $variables['input']['emailParameters']['theme'] === 'default';
+                        && !isset($variables['input']['roleIdentifiers'])
+                        && $variables['input']['lang'] === 'en'
+                        && $variables['input']['signedConfig'] === 'signed-config'
+                        && !isset($variables['input']['emailParameters']);
                 }),
                 'test-api-key',
                 $this->callback(function ($responseMapper) {

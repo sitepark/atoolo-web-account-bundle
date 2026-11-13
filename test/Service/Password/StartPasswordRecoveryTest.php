@@ -46,6 +46,7 @@ class StartPasswordRecoveryTest extends TestCase
                 from: new Address('noreply@example.com', 'Example'),
                 replyTo: new Address('support@example.com', 'Support'),
             ),
+            signedConfig: 'signed-config',
         );
     }
 
@@ -95,8 +96,9 @@ class StartPasswordRecoveryTest extends TestCase
                 $this->stringContains('mutation startPasswordRecovery'),
                 $this->callback(function ($variables) {
                     return $variables['input']['username'] === 'johndoe'
-                        && $variables['input']['emailParameters']['lang'] === 'en'
-                        && $variables['input']['emailParameters']['theme'] === 'default';
+                        && $variables['input']['lang'] === 'en'
+                        && $variables['input']['signedConfig'] === 'signed-config'
+                        && !isset($variables['input']['emailParameters']);
                 }),
                 'test-api-key',
                 $this->callback(function ($responseMapper) {
@@ -165,8 +167,9 @@ class StartPasswordRecoveryTest extends TestCase
                 $this->stringContains('mutation startPasswordRecovery'),
                 $this->callback(function ($variables) {
                     return $variables['input']['username'] === 'johndoe'
-                        && $variables['input']['emailParameters']['lang'] === 'en'
-                        && $variables['input']['emailParameters']['theme'] === 'default';
+                        && $variables['input']['lang'] === 'en'
+                        && $variables['input']['signedConfig'] === 'signed-config'
+                        && !isset($variables['input']['emailParameters']);
                 }),
                 'test-api-key',
                 $this->anything(),
